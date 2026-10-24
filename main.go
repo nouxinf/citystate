@@ -12,11 +12,14 @@ func main() {
 	camera.Position = rl.NewVector3(500.0, 500.0, 500.0)
 	camera.Target = rl.NewVector3(0.0, 0.0, 0.0)
 	camera.Up = rl.NewVector3(0.0, 1.0, 0.0)
-	camera.Fovy = 1.0
-	camera.Projection = rl.CameraPerspective
+	camera.Fovy = 10.0
+	camera.Projection = rl.CameraOrthographic
+
+	roadModel := rl.LoadModel("assets/road.glb");
+	scale := float32(0.01)
 
 	//cubePosition := rl.NewVector3(0.0, 0.0, 0.0)
-	cityMap := [][]string{{"s","s","s", "s"}, {"s", "s", "s"}, {"s", "s", "s"}}
+	cityMap := [][]string{{"s","s","s", "s"}, {"s", "s", "s"}, {"s", "s", "road"}}
 	
 
 	rl.SetTargetFPS(60)
@@ -29,8 +32,11 @@ func main() {
 		//rl.DrawCube(cubePosition, 2.0, 2.0, 2.0, rl.Red)
 		for z, row := range cityMap {
 			for x, cell := range row {
+				if cell == "road" {
+					rl.DrawModel(roadModel, rl.NewVector3(float32(x * 2.0), 0.0, float32(z * 2.0)), scale, rl.White)
+				}
 				if cell == "s" {
-					rl.DrawCube(rl.NewVector3(float32(x * 2.0), 0.0, float32(z * 2.0)), 2.0, 2.0, 2.0, rl.Red)
+					rl.DrawCube(rl.NewVector3(float32(x * 2.0), 1.0, float32(z * 2.0)), 2.0, 2.0, 2.0, rl.Red)
 				}
 			}
 		}
