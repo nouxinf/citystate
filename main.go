@@ -1,19 +1,34 @@
 package main
 
-import rl "github.com/gen2brain/raylib-go/raylib"
+import (
+	"github.com/gen2brain/raylib-go/raylib"
+)
 
 func main() {
-  rl.InitWindow(800, 450, "raylib [core] example - basic window")
-  defer rl.CloseWindow()
+	rl.InitWindow(800, 450, "raylib [core] example - 3d mode")
 
-  rl.SetTargetFPS(60)
+	camera := rl.Camera3D{}
+	camera.Position = rl.NewVector3(500.0, 500.0, 500.0)
+	camera.Target = rl.NewVector3(0.0, 0.0, 0.0)
+	camera.Up = rl.NewVector3(0.0, 1.0, 0.0)
+	camera.Fovy = 1.0
+	camera.Projection = rl.CameraPerspective
 
-  for !rl.WindowShouldClose() {
-    rl.BeginDrawing()
+	cubePosition := rl.NewVector3(0.0, 0.0, 0.0)
 
-    rl.ClearBackground(rl.RayWhite)
-    rl.DrawText("Congrats! You created your first window!", 190, 200, 20, rl.LightGray)
+	rl.SetTargetFPS(60)
 
-    rl.EndDrawing()
-  }
+	for !rl.WindowShouldClose() {
+		rl.BeginDrawing()
+		rl.ClearBackground(rl.RayWhite)
+		rl.BeginMode3D(camera)
+		rl.DrawGrid(10, 1.0)
+		rl.DrawCube(cubePosition, 2.0, 2.0, 2.0, rl.Red)
+		rl.EndMode3D()
+		rl.DrawText("Welcome to the third dimension!", 10, 40, 20, rl.DarkGray)
+		rl.DrawFPS(10, 10)
+		rl.EndDrawing()
+	}
+
+	rl.CloseWindow()
 }
