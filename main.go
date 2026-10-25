@@ -4,16 +4,36 @@ import (
 	"github.com/gen2brain/raylib-go/raylib"
 )
 
+var corners = [4][2]float64{
+	{500, 500},
+	{-500, 500},
+	{-500, -500},
+	{500, -500},
+}
+
+func mod(a, n int) int {
+	return ((a % n) + n) % n
+}
+
+func Corner(i int, reverse bool) (x, y float64) {
+	k := mod(i, 4)
+	if reverse {
+		k = mod(-k, 4)
+	}
+	return corners[k][0], corners[k][1]
+}
+
 func main() {
 	rl.InitWindow(800, 450, "raylib [core] example - 3d mode")
 	defer rl.CloseWindow()
 
 	camera := rl.Camera3D{}
 	camera.Position = rl.NewVector3(500.0, 500.0, 500.0)
-	camera.Target = rl.NewVector3(0.0, 0.0, 0.0)
+	camera.Target = rl.NewVector3(4.0, 0.0, 4.0)
 	camera.Up = rl.NewVector3(0.0, 1.0, 0.0)
 	camera.Fovy = 10.0
 	camera.Projection = rl.CameraOrthographic
+	corner := 0
 
 	roadModel := rl.LoadModel("assets/road.glb");
 	scale := float32(0.01)
@@ -25,6 +45,14 @@ func main() {
 	rl.SetTargetFPS(60)
 
 	for !rl.WindowShouldClose() {
+		if rl.IsKeyPressed(rl.KeyQ) {
+			corner++
+		}
+		if rl.IsKeyPressed(rl.KeyE) {
+			corner--
+		}
+		x, z := Corner(corner, false)
+		camera.Position = rl.NewVector3(float32(x), 500, float32(z))
 		rl.BeginDrawing()
 		rl.ClearBackground(rl.RayWhite)
 		rl.BeginMode3D(camera)
